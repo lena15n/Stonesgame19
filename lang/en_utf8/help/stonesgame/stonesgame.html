@@ -1,0 +1,440 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <!--<meta charset="utf-8">-->
+    <link rel="stylesheet" type="text/css" href="styles/style.css"/>
+    <title>Руководство пользователя</title>
+    <style type="text/css">
+        div.all{
+            position: absolute;
+            width: 100%;
+            margin: 0 0 0 0;
+            top: 0;
+        }
+
+        div.head {
+            width: 80%;
+            margin: 0 0 0 0;
+            position: relative;
+            left: 10%;
+            background: rgb(129, 221, 122);
+        }
+
+        div.centerblock {
+            width: 79.8%;
+            position: relative;
+            left: 10%;
+            bottom: 178px;
+            float: left;
+            margin-top: 13.4%;
+            background: rgb(210, 255, 197);/*, 0.7);*/
+            border-left: solid 2px #8b8b8b;
+            border-right: solid 1px #d1d1d1;
+            border-bottom: solid 1px #d1d1d1;
+        }
+
+        div.tabs {
+            width: 100%;
+            height: 12%;
+            position: absolute;
+            left: 0;
+            background: rgb(83, 86, 83);
+            z-index: 5;
+
+            border-radius: 0 0 100% 100%;
+            /* background: #cff67a;*/
+        }
+
+        div.container{
+            position: relative;
+            left: 10%;
+            text-align: justify;
+        }
+        /*************************/
+        img.setting{
+            height: 70px;
+            width: 70px;
+            border: inset 5px;
+            opacity: 0.9;
+            position: relative;
+            left: 80%;
+            border-radius: 95%;
+            margin-bottom: 10%;
+        }
+
+        img.main{
+            height: 400px;
+            width: 600px;
+            position: relative;
+            left: 3%;
+            margin-bottom: 0%;
+        }
+
+        h1.mytopheader{
+            font-family: sans-serif;
+            color: #ffffff;
+            text-align: center;
+            font-size: 28pt;
+            font-variant: small-caps;
+            font-weight: normal;
+            position: relative;
+            left: 84%;
+            bottom: -1%;
+
+        }
+        h2.center_header {
+            color: #ffffff;
+            background-color: #89cab0;
+            border-radius: 0 0 5px 5px;
+            padding: 2% 0 2% 0;
+            font-family: sans-serif;
+            text-align: center;
+            font-size: 20pt;
+            font-weight: normal;
+            position: relative;
+            top: -20px;
+        }
+        h2.main{
+            color: #222120;
+            padding: 0 0 1% 0;
+            font-family: sans-serif;
+            font-size: 15pt;
+            font-weight: normal;
+            position: relative;
+        }
+        h3.inner_header{
+            color: #222120;
+            padding: 0 0 0 0;
+            font-family: sans-serif;
+            font-size: 14pt;
+            font-weight: normal;
+            position: relative;
+            top: 0px;
+        }
+        h4.main{
+            color: #222120;
+            padding: 0 0 0 0;
+            font-family: sans-serif;
+            font-size: 13pt;
+            font-weight: normal;
+            position: relative;
+            top: -10px;
+            font-style: italic;
+        }
+
+        h4.header{
+            color: #222120;
+            padding: 0 0 0 0;
+            font-family: sans-serif;
+            font-size: 13pt;
+            font-weight: bold;
+            position: relative;
+            top: 0px;
+        }
+        p.main_text {
+            position: relative;
+            padding: 0% 16% 1% 0%;
+
+            font-size: 12pt;
+            color: #222120;
+            font-family: sans-serif;
+
+        }
+
+        p.img{
+            position: relative;
+            padding: 0 27% 3% 13%;
+
+            font-size: 12pt;
+            color: #222120;
+            font-family: sans-serif;
+        }
+        a.passive {
+            text-decoration: none;
+            font-family: sans-serif;
+            font-size: 12pt;
+            color: #292e29;
+        }
+        a.passive_color{
+            text-decoration: none;
+            font-family: sans-serif;
+            font-size: 12pt;
+            color: #105890;
+        }
+
+        a.passive:hover {text-decoration: underline; color: #0d9ffe;}
+        a.passive_color:hover {text-decoration: underline; color: #0d9ffe;}
+
+        ol.main {
+            font-size: 10pt;
+            font-family: sans-serif;
+            position: relative;
+            margin-bottom: 1%;
+        }
+        ul.main {
+            font-size: 10pt;
+            font-family: sans-serif;
+            position: relative;
+            margin-bottom: 1%;
+
+        }
+
+        li.main {
+            font-size: 10pt;
+            font-family: sans-serif;
+            position: relative;
+            margin-bottom: -2%;
+
+        }
+
+    </style>
+</head>
+<body >
+<div class="all">
+    <div class="head">
+        <table>
+            <tr>
+                <td><h1 class="mytopheader"><b>Справочная информация</b></h1></td>
+            </tr>
+        </table>
+        <div class="tabs">
+            <p></p>
+        </div>
+    </div>
+
+
+    <div class="centerblock">
+        <h2 class="center_header" >Руководство пользователя</h2>
+        <h2 class="main" style="left: 10%; bottom: -10px;" id="list">Содержание:</h2>
+        <div class="container">
+            <ol class="main">
+                <li><a class="passive" href="#main1">Назначение системы</a></li>
+                <li><a class="passive" href="#main2">Условия работы системы</a></li>
+                <li><a class="passive" href="#main3">Установка системы</a></li>
+                <li><a class="passive" href="#main4">Работа с системой</a></li>
+                <ol class="main">
+                    <li><a class="passive" href="#main_1">Работа в режиме «Преподаватель»</a></li>
+                    <ul class="main">
+                        <li><a class="passive" href="#inner10">Выбор задания</a></li>
+                        <li><a class="passive" href="#inner11">Настройка начальных условий задания</a></li>
+                        <li><a class="passive" href="#inner12">Включение задания в курс</a></li>
+                    </ul>
+
+
+                    <li><a class="passive" href="#main_2">Работа в режиме «Школьник»</a></li>
+                    <ol class="main">
+                        <li><a class="passive" href="#inner21">Самостоятельное решение задания</a></li>
+                        <ul class="main">
+                            <li><a class="passive" href="#inner_1">Сделать ход</a></li>
+                            <li><a class="passive" href="#inner_2">Изменить ход</a></li>
+                            <li><a class="passive" href="#inner_3">Удалить ход</a></li>
+                            <li><a class="passive" href="#inner_4">Очистить решение</a></li>
+                            <li><a class="passive" href="#inner_5">Пометить ход как заключительный</a></li>
+                            <li><a class="passive" href="#inner_6">Указать ходы выигрышной стратегии</a></li>
+                            <li><a class="passive" href="#inner_7">Проверка решения</a></li>
+                        </ul>
+
+
+                        <li><a class="passive" href="#inner22">Автоматическое составление решения</a></li>
+                        <ul class="main">
+                            <li><a class="passive" href="#inner_8">Создание нового словаря</a></li>
+                            <li><a class="passive" href="#inner_9">Открытие существующего словаря</a></li>
+                            <li><a class="passive" href="#inner_10">Сохранение словаря</a></li>
+                            <li><a class="passive" href="#inner_11">Работа с понятиями словаря</a></li>
+                            <li><a class="passive" href="#inner_12">Поиск понятий по маске</a></li>
+                        </ul>
+                    </ol>
+
+
+                    <li><a class="passive" href="#help">Справочная информация о системе</a></li>
+                    <ul class="main">
+                        <li><a class="passive" href="#help1">О программе</a></li>
+                        <li><a class="passive" href="#help2">Руководство пользователя</a></li>
+                    </ul>
+
+
+                </ol>
+            </ol>
+        </div>
+
+
+        <div class="container">
+            <h2 class="main" id="main1">Назначение системы</h2>
+            <p class="main_text">Данное приложение представляет собой программу, реализующую автоматизированную систему составления и разгадывания классического кроссворда.</p>
+            <p class="main_text">Приложение предназначено для составления кроссворда с использованием собственного словаря понятий либо автоматической его генерации. Пользователь может производить разгадывание кроссворда и поиск ошибок.</p>
+            <a class="passive_color" href="#list">Вернуться к оглавлению</a>
+
+
+
+
+            <h2 class="main" id="main2">Условия работы системы</h2>
+            <p class="main_text">Для корректной работы системы необходимо наличие соответствующих программных и аппаратных средств.</p>
+            <p class="main_text">Требования:</p>
+            <ul class="main">
+                <li class="main"><p class="main_text">персональный компьютер с ОС Windows XP или выше;</p></li>
+                <li class="main"><p class="main_text">не менее 1425 Мб оперативной памяти;</p></li>
+                <li class="main"><p class="main_text">10,4322 Гб на жестком диске;</p></li>
+                <li class="main"><p class="main_text">дисплей с разрешением не менее 1024 x 768 пикселей;</p></li>
+                <li class="main"><p class="main_text">клавиатура или иное устройство ввода;</p></li>
+                <li class="main"><p class="main_text">мышь или иное манипулирующее устройство.</p></li>
+            </ul>
+            <a class="passive_color" href="#list">Вернуться к оглавлению</a>
+
+
+
+
+            <h2 class="main" id="main3">Установка системы</h2>
+            <p class="main_text">Запускаемым файлом системы является файл Классический кроссворд.exe. Для просмотра справки необходим любой современный браузер, например, Google Chrome, Safari или Internet Explorer</p>
+            <a class="passive_color" href="#list">Вернуться к оглавлению</a>
+
+
+
+
+            <h2 class="main" id="main4">Работа с системой</h2>
+            <p class="main_text">После запуска приложения появится главное окно, изображённое на рисунке 1</p>
+            <img class="main" src="resources\Screenshot_11.png" alt="картинка отклеилась" style="height: 300px; width: 600px;"></p>
+            <p class="img">Рисунок 1 - Вид главного окна</p>
+            <p class="main_text">На главной форме доступны следующие функции:</p>
+            <ul class="main">
+                <li class="main"><p class="main_text">разгадывание;</p></li>
+                <li class="main"><p class="main_text">администрирование.</p></li>
+            </ul>
+            <a class="passive_color" href="#list">Вернуться к оглавлению</a>
+
+            <h3 class="inner_header" id="main_1">Работа в режиме «Пользователь»</h3>
+            <p class="main_text">При выборе опции главного меню «Разгадывание» происходит переключение системы на роль «Пользователь». Откроется окно с пустыми областями просмотра кроссворда и словаря. Для начала необходимо создать кроссворд автоматически или загрузить существующий кроссворд.</p>
+            <a class="passive_color" href="#list">Вернуться к оглавлению</a>
+
+            <h4 class="main" id="inner10">Автоматическое составление кроссворда</h4>
+            <p class="main_text">Создать кроссворд автоматически можно при выборе в выпадающем списке «Кроссворд» пункта меню «Сгенерировать». При этом откроется окно настройки параметров будущего кроссворда (рисунок 2). В нем указаны три поля для заполнения:</p>
+            <ul class="main">
+                <li class="main"><p class="main_text">путь к словарю;</p></li>
+                <li class="main"><p class="main_text">длина сетки кроссворда;</p></li>
+                <li class="main"><p class="main_text">ширина сетки кроссворда;</p></li>
+            </ul>
+            <p class="main_text">Поле «Словарь» обязательно для заполнения, для этого стоит нажать на кнопку «Обзор...» и выбрать необходимый словарь. Остальные поля задаются с помощью кнопок увеличения значения на единицу и уменьшения значения на единицу. Если оставить их неизменными, заполняются значениями по умолчанию.</p>
+            <img class="main" src="resources\Screenshot_12.png" alt="картинка отклеилась" ></p>
+            <p class="img">Рисунок 2 - Окно настройки параметров кроссворда</p>
+            <a class="passive_color" href="#list">Вернуться к оглавлению</a>
+
+            <h4 class="main" id="inner11">Загрузка существующего кроссворда</h4>
+            <p class="main_text">Чтобы загрузить существующий кроссворд, необходимо выбрать в выпадающем списке «Кроссворд» пункт меню «Загрузить». Будет открыто окно, где нужно указать имя необходимого кроссворда. Кроссворд будет открыт.</p>
+            <a class="passive_color" href="#list">Вернуться к оглавлению</a>
+
+            <h4 class="main" id="inner12">Разгадывание кроссворда</h4>
+            <p class="main_text">После того как кроссворд был выбран, можно приступить к его разгадыванию. В наличии у пользователя есть два типа подсказок (рисунок 3):</p>
+            <ul class="main">
+                <li class="main"><p class="main_text">открыть букву;</p></li>
+                <li class="main"><p class="main_text">открыть все слово целиком.</p></li>
+            </ul>
+            <p class="main_text">Для выбора подсказки достаточно выделить необходимую букву слова (слово) и нажать на кнопку «Открыть букву» («Открыть слово»). </p>
+            <p class="main_text">По завершению игры следует нажать кнопку «Завершить игру». Система выдаст результат и откроет ответы.  </p>
+            <img class="main" src="resources\Screenshot_13.png" alt="картинка отклеилась" ></p>
+            <p class="img">Рисунок 3 - Процесс разгадывания кроссворда</p>
+            <a class="passive_color" href="#list">Вернуться к оглавлению</a>
+
+            <h3 class="inner_header" id="main_2">Работа в режиме «Администратор»</h3>
+            <p class="main_text">Если в главном меню был выбран пункт «Администрирование», система укажет на необходимость ввода пароля. Если ввод пароля прошел успешно, происходит переключение системы на роль «Администратор». Режим администратора включает в себя возможности управления словарями и управления кроссвордами (рисунок 4). </p>
+            <img class="main" src="resources\Screenshot_14.png" alt="картинка отклеилась" style="height: 300px; width: 600px;"></p>
+            <p class="img">Рисунок 4 - Вид меню при переходе в режим администратора </p>
+            <a class="passive_color" href="#list">Вернуться к оглавлению</a>
+
+
+            <h4 class="header" id="inner21">«Менеджер кроссвордов»</h4>
+            <p class="main_text">При входе в «Менеджер кроссвордов» откроется окно работы с кроссвордами. Она включает в себя функции создания и редактирования кроссворда. </p>
+            <a class="passive_color" href="#list">Вернуться к оглавлению</a>
+
+            <h4 class="main" id="inner_1">Загрузка словаря</h4>
+            <p class="main_text">Вначале работы с кроссвордами требуется загрузить словарь. Для это служит пункт выпадающего меню «Словарь» – «Загрузить». Откроется окно, в котором можно выбрать необходимый словарь. Открытый словарь появится в правом нижнем углу.</p>
+            <a class="passive_color" href="#list">Вернуться к оглавлению</a>
+
+            <h4 class="main" id="inner_2">Работа с кроссвордами</h4>
+            <p class="main_text">Вид меню при работе с кроссвордами представлен на рисунке 5.</p>
+            <img class="main" src="resources\Screenshot_15.png" alt="картинка отклеилась" ></p>
+            <p class="img">Рисунок 5 - Вид пунктов меню при работе с кроссвордами</p>
+            <a class="passive_color" href="#list">Вернуться к оглавлению</a>
+
+            <h4 class="main" id="inner_3">Автоматическое создание кроссворда</h4>
+            <p class="main_text">Для автоматического создания кроссворда нужно выбрать пункт меню выпадающего списка «Кроссворд» – «Сгенерировать». Ход выполнения необходимых действий для генерация кроссворда в режиме «Администратор» аналогичен тому, что проводится в режиме «Пользователь». Можно продолжить добавлять слова в существующий кроссворд путем генерации (рисунок 5).</p>
+            <a class="passive_color" href="#list">Вернуться к оглавлению</a>
+
+            <h4 class="main" id="inner_4">Загрузка существующего кроссворда</h4>
+            <p class="main_text">Ход действий аналогичен для загрузки кроссворда в режиме «Пользователь» (см. п. 4.1).</p>
+            <a class="passive_color" href="#list">Вернуться к оглавлению</a>
+
+            <h4 class="main" id="inner_5">Создание нового кроссворда</h4>
+            <p class="main_text">Для создания нового пустого кроссворда необходимо выбрать пункт меню «Новый» выпадающего списка «Кроссворд» (рисунок 5). </p>
+            <a class="passive_color" href="#list">Вернуться к оглавлению</a>
+
+            <h4 class="main" id="inner_6">Изменение параметров по умолчанию кроссворда</h4>
+            <p class="main_text">В любой момент времени можно изменить параметры кроссворда по умолчанию: длину и ширину сетки. Для этого надо выбрать пункт «Параметры» в том же выпадающем списке (рисунок 5). </p>
+            <a class="passive_color" href="#list">Вернуться к оглавлению</a>
+
+            <h4 class="main" id="inner_7">Сохранение кроссворда</h4>
+            <p class="main_text">В конце работы над кроссвордом его можно сохранить. Для этого служит пункт меню «Сохранить» выпадающего списка «Кроссворд». После его выбора требуется указать имя для данного кроссворда (рисунок 5). </p>
+            <a class="passive_color" href="#list">Вернуться к оглавлению</a>
+
+
+            <h4 class="header" id="inner22">«Менеджер словарей»</h4>
+            <p class="main_text">Если необходимо создать словарь или отредактировать его, стоит воспользоваться менеджером словарей. При его выборе появится новое окно. Далее стоит выбрать словарь или создать новый. В нем стоит выбрать необходимый словарь: новый или уже существующий. </p>
+            <a class="passive_color" href="#list">Вернуться к оглавлению</a>
+
+            <h4 class="main">Работа со словарями</h4>
+            <p class="main_text">Вид меню при работе со словарями представлен на рисунке 6.</p>
+            <img class="main" src="resources\Screenshot_16.png" alt="картинка отклеилась" ></p>
+            <p class="img">Рисунок 6 - Вид пунктов меню при работе со словарями</p>
+            <a class="passive_color" href="#list">Вернуться к оглавлению</a>
+
+            <h4 class="main" id="inner_8">Создание нового словаря</h4>
+            <p class="main_text">Новый словарь можно создать путем выбора пункта меню «Новый» выпадающего списка «Словарь» (рисунок 6). Новый пустой словарь будет создан. </p>
+            <a class="passive_color" href="#list">Вернуться к оглавлению</a>
+
+            <h4 class="main" id="inner_9">Открытие существующего словаря</h4>
+            <p class="main_text">При открытии словаря стоит выбрать пункт меню «Открыть словарь» выпадающего списка «Словарь». В открывшемся окне можно выбрать необходимый словарь (рисунок 6). </p>
+            <a class="passive_color" href="#list">Вернуться к оглавлению</a>
+
+            <h4 class="main" id="inner_10">Сохранение словаря</h4>
+            <p class="main_text">Для того, чтобы сохранить словарь, следует выбрать пункт меню «Сохранить» выпадающего списка «Словарь». Далее необходимо задать имя словарю (рисунок 6).</p>
+            <a class="passive_color" href="#list">Вернуться к оглавлению</a>
+
+            <h4 class="main" id="inner_11">Работа с понятиями словаря</h4>
+            <p class="main_text">При работе с понятиями словаря доступны следующие функции:</p>
+            <ul class="main">
+                <li class="main"><p class="main_text">добавление;</p></li>
+                <li class="main"><p class="main_text">редактирование;</p></li>
+                <li class="main"><p class="main_text">удаление.</p></li>
+            </ul>
+            <p class="main_text">При добавлении или редактировании слова в словаре доступны для редактирования поля: понятие и определение (рисунок 7). </p>
+            <a class="passive_color" href="#list">Вернуться к оглавлению</a>
+
+            <h4 class="main" id="inner_12">Поиск понятий по маске </h4>
+            <p class="main_text">Определенные понятия находить просто при использовании поиска по маске ? набора букв и специальных символов:  «?» (обозначает один символ) и «*» (обозначает любую последовательность символов). После ввода маски в поле следует нажать на кнопку поиска понятий по этой маске. В словаре останутся только слова, соответствующие ей. Далее маску можно очистить. </p>
+            <img class="main" src="resources\Screenshot_17.png" alt="картинка отклеилась" ></p>
+            <p class="img">Рисунок 7 - Редактирование понятия в менеджере словарей</p>
+            <a class="passive_color" href="#list">Вернуться к оглавлению</a>
+
+            <h3 class="inner_header" id="help">Справочная информация о системе</h3>
+            <h4 class="main" id="help1">О программе</h4>
+            <p class="main_text">Информацию о программе можно получить, выбрав пункт меню «О программе» выпадающего списка «Справка» (рисунок 8).</p>
+            <img class="main" src="resources\Screenshot_18.png" alt="картинка отклеилась" style="height: 250px; width: 600px;"></p>
+            <p class="img">Рисунок 8 - Информация о программе</p>
+            <a class="passive_color" href="#list">Вернуться к оглавлению</a>
+
+            <h4 class="main" id="help2">Руководство пользователя</h4>
+            <p class="main_text">При возникновении сложностей с пониманием отдельных функций программы существует возможность обращения к руководству пользователя (рисунок 9). Для этого надо выбрать в выпадающем списке «Справка» пункт меню «Руководство пользователя». Руководство пользователя откроется в браузере пользователя, который был указан по умолчанию. </p>
+            <img class="main" src="resources\Screenshot_19.png" alt="картинка отклеилась" style="height: 350px; width: 650px;"></p>
+            <p class="img">Рисунок 9 - Руководство пользователя</p>
+            <a class="passive_color" href="#list">Вернуться к оглавлению</a>
+
+
+        </div>
+
+        <p class="main_text"></p>
+        <p class="main_text"></p>
+        <p class="main_text"></p>
+    </div>
+
+</div>
+</body>
+</html>
