@@ -1,46 +1,82 @@
-<?php  // $Id$
-/* This template determines the overall layout of a question. It is included by the 
- * print_question() method.
- */
+<?php
+ $wwwr = $CFG->wwwroot.'/question/type/stonesdebug/';
+// This is for avoid problems with image cache, see
+// http://www.thefutureoftheweb.com/blog/image-onload-isnt-being-called
+// http://api.jquery.com/load-event/
+
+echo '<b>greeeen</b>';
+
 ?>
-<div id="q<?php echo $question->id; ?>" class="que <?php echo $question->qtype; ?> clearfix">
-  <div class="info">
-    <span class="no"><span class="accesshide">Question </span><?php echo $number; ?></span>
-    <?php if ($editlink) { ?>
-      <span class="edit"><?php echo $editlink; ?></span>
-    <?php }
-    if ($grade) { ?>
-      <div class="grade">
-        <?php echo get_string('marks', 'quiz').': '.$grade; ?>
-      </div>
-    <?php } ?>
-  </div>
-  <div class="content">
-    <?php $this->print_question_formulation_and_controls($question, $state, $cmoptions, $options);
-    if ($generalfeedback) { ?>
-      <div class="generalfeedback">
-        <?php echo $generalfeedback ?>
-      </div>
-    <?php }
-    if ($comment) { ?>
-      <div class="comment">
-        <?php
-          echo get_string('comment', 'quiz').': ';
-          echo $comment;
-        ?>
-      </div>
-    <?php }
-    echo $commentlink;  ?>
-    <div class="grading">
-      <?php $this->print_question_grading_details($question, $state, $cmoptions, $options); ?>
-    </div><?php
-    if ($history) { ?>
-      <div class="history">
-        <?php
-          print_string('history', 'quiz');
-          echo $history;
-        ?>
-      </div>
-    <?php } ?>
-  </div>
+
+<script type="text/javascript" src="<?php echo $wwwr; ?>jquery.js"></script>
+<script type="text/javascript" src="<?php echo $wwwr; ?>jquery.ui.js"></script>
+<script language="javascript">
+
+  // IE hack with cached images
+  var areaLoaded = false;
+
+  $(document).ready(function(){
+
+
+
+
+            <?php
+              if (isset($state->responses)) {
+                foreach ($state->responses as $key=>$response) {
+                  if($response){
+                    echo $response;
+                  }
+                }
+              }
+      echo 'inside ready';
+              ?>
+            }
+
+  );
+
+</script>
+
+<div class="qtext">
+  <?php echo $questiontext;
+  echo 'EEEfirst!!!!!!';
+  ?>
+     'first!!!!!!';
 </div>
+
+<?php
+
+foreach($question->options->answers as $key=>$a){
+  $a->json_decode($a->answer);
+    echo format_string($a->text)." - Ответ<br>";
+}
+
+?>
+
+
+<?php if ($response){
+if ($feedback) { ?>
+<div class="feedback">
+  <?php echo $feedback;
+   echo 'feedback verify';
+  ?>
+</div>
+<?php } ?>
+
+<div>
+<?php
+echo 'in ->>>';
+
+$this->print_question_submit_buttons($question, $state, $cmoptions, $options);
+
+echo 'out <-------';?>
+</div>
+
+<?php
+}
+else{
+    echo '____first!!!!!!';
+    echo get_string('missingimage', 'qtype_stonesdebug');
+}
+
+?>
+

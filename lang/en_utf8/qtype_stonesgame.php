@@ -32,4 +32,6 @@ $string['jsclosewithout'] = 'Close the window without saving the changes?';
 $string['jswarning'] = 'Warning!';
 $string['jsconfirmdelete'] = 'Are you sure you want to delete this step?';
 
+$string['missingimage']='СТРОКАА типа картинки нет';
+
 ?>
