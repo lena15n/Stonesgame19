@@ -1,13 +1,11 @@
 <?php
 /**
  * The language strings for the stonesgame question type.
- *
+ *    
  * @copyright &copy; 2016 SSAU
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  * @package stonesgame
  *
- *
- * дублируется во внешнем файле с таким же названием, но этот - важнее (перекрывает)
  */
 
 $string['pluginname'] = 'Задание C3';
@@ -16,6 +14,7 @@ $string['addingstonesgame'] = 'Добавление задания C3';
 $string['stonesgame'] = 'Задание C3';
 $string['openeditor'] = 'Открыть окно для построения дерева (Задание 3)';
 $string['failedloadinganswers'] = "Возникли проблемы при загрузке ответов..";
+
 
 $string['jsadd'] = 'Сделать ход';
 $string['jsedit'] = 'Изменить ход';

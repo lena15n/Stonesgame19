@@ -1,6 +1,6 @@
 <?php  // $Id: upgrade.php,v 1.5.4.1 2007/11/02 16:20:35 tjhunt Exp $
 
-// This file keeps track of upgrades to 
+// This file keeps track of upgrades to
 // the ubhotspots qtype plugin
 //
 // Sometimes, changes between versions involve
@@ -17,7 +17,7 @@
 // The commands in here will all be database-neutral,
 // using the functions defined in lib/ddllib.php
 
-function xmldb_qtype_ubhotspots_upgrade($oldversion=0) {
+function xmldb_qtype_stonesgame_upgrade($oldversion=0) {
 
     global $CFG, $THEME, $db;
 
