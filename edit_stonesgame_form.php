@@ -2,8 +2,6 @@
 /**
  * Defines the editing form for the stonesgame question type.
  *
- * @copyright &copy; 2007 Jamie Pratt
- * @author Jamie Pratt me@jamiep.org
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  * @package questionbank
  * @subpackage questiontypes
@@ -13,59 +11,76 @@
  * stonesgame editing form definition.
  */
 class question_edit_stonesgame_form extends question_edit_form {
-
-    function get_per_answer_fields(&$mform, $label, $gradeoptions, &$repeatedoptions, &$answersoption) {
-        $repeated = parent::get_per_answer_fields($mform, $label, $gradeoptions, $repeatedoptions, $answersoption);
-
-        $tolerance =& $mform->createElement('text', 'tolerance', get_string('acceptederror', 'quiz'));
-        $repeatedoptions['tolerance']['type'] = PARAM_NUMBER;
-        array_splice($repeated, 3, 0, array($tolerance));
-        $repeated[1]->setSize(10);
-
-        return $repeated;
-    }
-
     /**
      * Add question-type specific form fields.
      *
      * @param MoodleQuickForm $mform the form being built.
      */
     function definition_inner(&$mform) {
+        //Общие параметры
+        $mform->addElement('header', 'mainheader', get_string('mainheader', 'qtype_stonesgame'));
 
-//------------------------------------------------------------------------------------------
-        $creategrades = get_grade_options();
-        $this->add_per_answer_fields($mform, get_string('answerno', 'qtype_stonesgame', '{no}'),
-                $creategrades->gradeoptions);
-//------------------------------------------------------------------------------------------
-        $repeated = array();
-        $repeated[] =& $mform->createElement('header', 'unithdr', get_string('unithdr', 'qtype_stonesgame', '{no}'));
+        $mform->addElement('text', 'pilescount', get_string('pilescount', 'qtype_stonesgame'), 'size="5"');
+        $mform->setDefault('pilescount', '2');
 
-        $repeated[] =& $mform->createElement('text', 'unit', get_string('unit', 'quiz'));
-        $mform->setType('unit', PARAM_NOTAGS);
+        $players = array(get_string('jspet', 'qtype_stonesgame'), get_string('jsvan', 'qtype_stonesgame'));
+        $mform->addElement('select', 'player', get_string('player', 'qtype_stonesgame'), $players);
+        $mform->setDefault('player', '2');
+        
+        
+        $operationscount = 2;
+        $mform->addElement('text', 'operationscount', get_string('operationscount', 'qtype_stonesgame'), 'size="5"');
+        $mform->setType('operationscount', PARAM_INTEGER);
+        $mform->setDefault('operationscount', $operationscount);
 
-        $repeated[] =& $mform->createElement('text', 'multiplier', get_string('multiplier', 'quiz'));
-        $mform->setType('multiplier', PARAM_NUMBER);
-
-        if (isset($this->question->options)){
-            $countunits = count($this->question->options->units);
-        } else {
-            $countunits = 0;
+        for($i = 1; $i <= $operationscount; $i++) {
+            $mform->addElement('text', 'operation'.$i, get_string('operation', 'qtype_stonesgame').$i);
+            $mform->setDefault('operation'.$i, '+1');
         }
 
-        if ($this->question->formoptions->repeatelements){
-            $repeatsatstart = $countunits + 2;
-        } else {
-            $repeatsatstart = $countunits;
-        }
-        $this->repeat_elements($repeated, $repeatsatstart, array(), 'nounits', 'addunits', 2, get_string('addmoreunitblanks', 'qtype_stonesgame'));
+        $mform->addElement('text', 'wincase', get_string('wincase', 'qtype_stonesgame'));
+        $mform->setDefault('wincase', '>= 73');
 
-        if ($mform->elementExists('multiplier[0]')) {
-        /// Does not exist when this form is used in 'move to another category'
-        /// mode with a qusetion that has no units. This was leading to errors.
-            $firstunit =& $mform->getElement('multiplier[0]');
-            $firstunit->freeze();
-            $firstunit->setValue('1.0');
-            $firstunit->setPersistantFreeze(true);
+
+        //Параметры Задания 1
+        $mform->addElement('header', 'task1header', get_string('task1header', 'qtype_stonesgame'));
+
+        $positionscount1 = 1;
+        $mform->addElement('text', 'positionscount1', get_string('positionscount', 'qtype_stonesgame'), 'size="5"');
+        $mform->setType('positionscount1', PARAM_INTEGER);
+        $mform->setDefault('positionscount1', $positionscount1);
+
+        for($i = 1; $i <= $positionscount1; $i++) {
+            $mform->addElement('text', 'position1'.$i, get_string('position', 'qtype_stonesgame').$i);
+            $mform->setDefault('position1'.$i, '(7, 31)');
+        }
+
+
+        //Параметры Задания 2
+        $mform->addElement('header', 'task2header', get_string('task2header', 'qtype_stonesgame'));
+
+        $positionscount2 = 2;
+        $mform->addElement('text', 'positionscount2', get_string('positionscount', 'qtype_stonesgame'), 'size="5"');
+        $mform->setType('positionscount2', PARAM_INTEGER);
+        $mform->setDefault('positionscount2', $positionscount2);
+
+        for($i = 1; $i <= $positionscount2; $i++) {
+            $mform->addElement('text', 'position'.$i, get_string('position', 'qtype_stonesgame').$i);
+            $mform->setDefault('position'.$i, '(7, 31)');
+        }
+
+
+        //Параметры Задания 3
+        $mform->addElement('header', 'task3header', get_string('task3header', 'qtype_stonesgame'));
+
+        $positionscount3 = 1;
+        $mform->addElement('text', 'positionscount3', get_string('positionscount', 'qtype_stonesgame'), 'size="5"');
+        $mform->setType('positionscount3', PARAM_INTEGER);
+        $mform->setDefault('positionscount3', $positionscount3);
+
+        for($i = 1; $i <= $positionscount3; $i++) {
+            $mform->addElement('text', 'position3'.$i, get_string('position', 'qtype_stonesgame').$i);
+            $mform->setDefault('position3'.$i, '(7, 31)');
         }
     }
 

@@ -1,7 +1,6 @@
 <?php  // $Id$
 /**
- * @version $Id$
- * @author Martin Dougiamas and many others. Tim Hunt.
+ * 
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  * @package questionbank
  * @subpackage questiontypes
