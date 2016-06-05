@@ -42,6 +42,7 @@ class GameTree
 
         //$this->toJSON($this->startState);
         echo "debug\r\n";
+        echo State::$counter;
     }
 
     public function getMaxCount(){
@@ -250,20 +251,20 @@ class GameTree
 
 }
 
-/* Test Game
+/* Test Game*/
 $operation1 = new Operation('x', 2);
 $operation2 = new Operation('+', 1);
 $operations = array(0 => $operation1, 1 => $operation2);
 
 $stones = array(0 => 7, 1 => 31);
 
-$game = new GameTree($operations, $stones, 73, 0, 10);
+$game = new GameTree($operations, $stones, true, 73, 0, 10);
 $game->start();
-*/
+
 
 class State
 {
-    private static $counter;//long
+    public static $counter;//long
     private $index;//long
     private $step;//long //номер хода в игре (несколько состояний могут иметь один и тот же номер хода)
     private $stonesInHeaps;//ArrayList<Integer>
@@ -298,8 +299,6 @@ class State
     {
         $instance = new self();
 
-        $instance->index = State::$counter;
-        State::$counter++;
         $instance->stonesInHeaps = $state->stonesInHeaps;//клонировать никого не надо, а если stdclass, то уже будет по ссылке
         $instance->updateSum();
 
