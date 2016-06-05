@@ -23,7 +23,6 @@ class Verification {
         $gameTree = new GameTree($operations, $initialStonesInHeaps, $moreOrEqual, $endOfGameSum, $firstPlayer, $maxDepth);
         $gameTree->start();
         $winner = $gameTree->getWinner();//int to string !!!
-        $maxcount = $gameTree->getMaxCount();
         $tree = $gameTree->getTree();
 
 

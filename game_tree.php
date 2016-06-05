@@ -42,14 +42,6 @@ class GameTree
 
         //$this->toJSON($this->startState);
         echo "debug\r\n";
-        echo State::$counter;
-    }
-
-    public function getMaxCount(){
-        //TODO
-
-        $maxCount = 0;
-        return $maxCount;
     }
 
     public function getTree(){
@@ -72,9 +64,9 @@ class GameTree
     {
         if (!empty($queue)) {//можно и без очереди, просто контроль по step
             $currentState = array_shift($queue);//извлекаем первый эл т из очереди
-            /*if (currentState.getStep() >= MAX_DEPTH){//шоб было на всякий случай
+            if ($currentState->getStep() >= $this->maxDepth){
                 return;
-            }*/
+            }
 
             if (!($currentState->getWin() == 1)) {
                 $currentState->setNextStates($this->calculateAllPossibleStatesOnIter($currentState));
@@ -264,7 +256,7 @@ $game->start();
 
 class State
 {
-    public static $counter;//long
+    private static $counter;//long
     private $index;//long
     private $step;//long //номер хода в игре (несколько состояний могут иметь один и тот же номер хода)
     private $stonesInHeaps;//ArrayList<Integer>
