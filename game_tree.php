@@ -6,6 +6,7 @@ class GameTree
     const countOfPlayers = 2;
     private $operations;
     private $initialStonesInHeaps;
+    private $moreOrEqual;
     private $endOfGameSum;
     private $firstPlayer;
     private $maxDepth;
@@ -15,10 +16,11 @@ class GameTree
     private $startState;
 
 
-    public function __construct($operations, $stonesInHeaps, $endOfGameSum, $firstGamer, $maxDepth)
+    public function __construct($operations, $stonesInHeaps, $moreOrEqual, $endOfGameSum, $firstGamer, $maxDepth)
     {
         $this->operations = $operations;
         $this->initialStonesInHeaps = $stonesInHeaps;
+        $this->moreOrEqual = $moreOrEqual;
         $this->endOfGameSum = $endOfGameSum;
         $this->firstPlayer = $firstGamer;
         $this->maxDepth = $maxDepth;
@@ -39,12 +41,26 @@ class GameTree
         $this->cutBranches($this->startState);
 
         //$this->toJSON($this->startState);
-        echo "ВСЕ!!!!\r\n";
+        echo "debug\r\n";
+    }
+
+    public function getMaxCount(){
+        //TODO
+
+        $maxCount = 0;
+        return $maxCount;
+    }
+
+    public function getTree(){
+        //TODO
+        //MB перевод в json
+        $tree = 0;
+        return $tree;
     }
 
     public function getWinner()
     {
-        if ($this->winner == -1){
+        if ($this->winner == -1) {
             $this->start();
         }
 
@@ -99,18 +115,35 @@ class GameTree
 
                 $possibleState->setHeap($heapNum, $operation->apply($stonesOfOneHeap));
 
-                if ($possibleState->getSum() >= $this->endOfGameSum) {
-                    $possibleState->setWin();
-                    array_push($possibleStates, $possibleState);
-                    array_push($winStates, $possibleState);
+                if ($this->moreOrEqual) {
+                    if ($possibleState->getSum() >= $this->endOfGameSum) {
+                        $possibleState->setWin();
+                        array_push($possibleStates, $possibleState);
+                        array_push($winStates, $possibleState);
 
-                    echo "Winner state! -> ";
-                    $possibleState->printHeaps();
-                } else {
-                    array_push($possibleStates, $possibleState);
+                        echo "Winner state! -> ";
+                        $possibleState->printHeaps();
+                    } else {
+                        array_push($possibleStates, $possibleState);
 
-                    echo "Next possible state -> ";
-                    $possibleState->printHeaps();
+                        echo "Next possible state -> ";
+                        $possibleState->printHeaps();
+                    }
+                }
+                else {
+                    if ($possibleState->getSum() > $this->endOfGameSum) {
+                        $possibleState->setWin();
+                        array_push($possibleStates, $possibleState);
+                        array_push($winStates, $possibleState);
+
+                        echo "Winner state! -> ";
+                        $possibleState->printHeaps();
+                    } else {
+                        array_push($possibleStates, $possibleState);
+
+                        echo "Next possible state -> ";
+                        $possibleState->printHeaps();
+                    }
                 }
 
                 $heapNum++;
@@ -125,8 +158,8 @@ class GameTree
 
             //оставляет только выигрышные
 
-            foreach ($possibleStates as $key=>$possibleState){
-                if (!in_array($possibleState, $winStates)){
+            foreach ($possibleStates as $key => $possibleState) {
+                if (!in_array($possibleState, $winStates)) {
                     unset($possibleStates[$key]);
                 }
             }
@@ -218,8 +251,6 @@ class GameTree
 }
 
 /* Test Game
-
- */
 $operation1 = new Operation('x', 2);
 $operation2 = new Operation('+', 1);
 $operations = array(0 => $operation1, 1 => $operation2);
@@ -228,6 +259,7 @@ $stones = array(0 => 7, 1 => 31);
 
 $game = new GameTree($operations, $stones, 73, 0, 10);
 $game->start();
+*/
 
 class State
 {
