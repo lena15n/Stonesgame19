@@ -40,7 +40,6 @@ class GameTree
 
         //$this->toJSON($this->startState);
         echo "ВСЕ!!!!\r\n";
-        echo State::$counter;
     }
 
     public function getWinner()
@@ -232,7 +231,7 @@ $game->start();
 
 class State
 {
-    public static $counter;//long
+    private static $counter;//long
     private $index;//long
     private $step;//long //номер хода в игре (несколько состояний могут иметь один и тот же номер хода)
     private $stonesInHeaps;//ArrayList<Integer>
