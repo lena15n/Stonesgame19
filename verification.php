@@ -14,7 +14,9 @@ class Verification {
         $strategy = $studentAnswers["strategy"];
         
         $answertree = $answers["tree"];
-        $answertree->checkSubgraph($strategy);
+        $answerwinner = $answers["winner"];
+        
+        $answertree->isStrategyCorrect($strategy, $answerwinner);
         
         //check maxcount
     }

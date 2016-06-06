@@ -64,15 +64,26 @@ class GameTree
         return $this->winner;
     }
 
-    public function checkSubgraph($strategy)
+    public function isStrategyCorrect($strategy)
     {
-        return $this->startState->checkSubgraph($strategy);
-    }
+        if ($this->isThereAllPossibleStatesOfEnemy($strategy)) {
+            return $this->startState->isSubgraph($strategy);
+        }
+        else {
+            return false;
+        }
 
+    }
 
     public function getMaxCount($strategy)
     {
 
+    }
+
+    private function isThereAllPossibleStatesOfEnemy($strategy){
+
+
+        return false;
     }
 
     private function buildGameTreeBranch($queue)
@@ -257,7 +268,7 @@ class GameTree
 
 }
 
-/* Test Game*/
+/* Test Game
 $operation1 = new Operation('x', 2);
 $operation2 = new Operation('+', 1);
 $operations = array(0 => $operation1, 1 => $operation2);
@@ -314,7 +325,7 @@ if ($game->getTree()->checkSubgraph($dummystrategy)) {
 } else {
     echo "gtfo";
 }
-
+*/
 
 class State
 {
@@ -371,8 +382,28 @@ class State
         return $instance;
     }
 
-    public function checkSubgraph($strategy)
-    {//TODO: add check что заключительными заканчиваются ветки
+    public function isStrategyCorrect($strategy, $winner)
+    {
+        if ($this->isThereAllPossibleStatesOfEnemy($strategy, $winner)) {
+            return $this->isSubgraph($strategy);
+        }
+        else {
+            return false;
+        }
+
+    }
+
+    private function isThereAllPossibleStatesOfEnemy($strategy, $winner){
+        //проверять что тут есть все возможные ходы противника
+
+        return false;
+    }
+
+    public function isSubgraph($strategy)
+    {//TODO: add check что заключительными заканчиваются ветки и если игрок - противоп, то таких ходов дб m*n строго, не меньше
+        // т к для всех возможных ходов противника
+
+
         if ($this->equals($strategy)) {
             $isSubGraph = true;
 
@@ -472,25 +503,6 @@ class State
         ($this->player == $state->getPlayer());
 
     }
-
-    /* public function hashCode()
-     {//no nextstates
-         $prime = 31;
-         $result = 1;
-         $result = $prime * $result + $this->step;
-         $result = $prime * $result + count($this->nextStates);
-
-         foreach ($this->stonesInHeaps as $key => $stonesInHeap) {
-             $result = $prime * $result + $stonesInHeap;
-         }
-
-         $result = $prime * $result + $this->player;
-         $result = $prime * $result + $this->operation->getX;
-         $result = $prime * $result + $this->operation->getOperator;
-
-         return $result;
-     }*/
-
 
     public function setHeap($index, $newCountOfStones)
     {
