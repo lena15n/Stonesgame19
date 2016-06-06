@@ -255,7 +255,7 @@ class GameTree
 
 }
 
-/* Test Game*/
+/* Test Game
 $operation1 = new Operation('x', 2);
 $operation2 = new Operation('+', 1);
 $operations = array(0 => $operation1, 1 => $operation2);
@@ -263,7 +263,7 @@ $operations = array(0 => $operation1, 1 => $operation2);
 $stones = array(0 => 7, 1 => 31);
 
 $game = new GameTree($operations, $stones, true, 73, 0, 10);
-$game->start();
+$game->start();*/
 
 
 class State
@@ -321,7 +321,8 @@ class State
         return $instance;
     }
 
-    public function checkSubgraph($strategy){
+    public function checkSubgraph($strategy)
+    {
         //TODO: add check что заключительными заканчиваются ветки
         $isSubGraph = true;
 
@@ -338,10 +339,10 @@ class State
         for ($i = 0; $i < $strategyChildren; $i++) {
             for ($j = 0; $j < $treeChildrenCount; $j++) {
                 //if (!$usedChildOfSmallTree[$i]) {
-                    if ($strategyChildren[$i]->equals($treeChildren[$j])) {
-                        $isSubGraph &= $treeChildren[$j]->checkSubgraph($strategyChildren[$i]);
-                        $usedChildOfSmallTree[$i] = true;
-                    }
+                if ($strategyChildren[$i]->equals($treeChildren[$j])) {
+                    $isSubGraph &= $treeChildren[$j]->checkSubgraph($strategyChildren[$i]);
+                    $usedChildOfSmallTree[$i] = true;
+                }
                 //}
             }
         }
@@ -384,24 +385,43 @@ class State
 
     public function equals($state)
     {
-        $thisNextStates = $this->getNextStates();
-        $stateNextStates = $state->getNextStates();
-
-        for
+        foreach ($this->stonesInHeaps as $key1 => $stonesInThisHeap){
+            foreach ($state->getStonesInHeaps() as $key2 => $stonesInStateHeap){
+                if (!$stonesInThisHeap == $stonesInStateHeap)
+                    return false;
+            }
+        }
 
         return ($this->getStep() == $state->getStep()) &&
-                ($this->getPlayer() == $state->getPlayer()) &&
-                ($this->getOperation()->equals($state->getOperation())) &&
-                ();
+            ($this->getPlayer() == $state->getPlayer()) &&
+            ($this->getOperation()->equals($state->getOperation()));
 
     }
+
+   /* public function hashCode()
+    {//no nextstates
+        $prime = 31;
+        $result = 1;
+        $result = $prime * $result + $this->step;
+        $result = $prime * $result + count($this->nextStates);
+
+        foreach ($this->stonesInHeaps as $key => $stonesInHeap) {
+            $result = $prime * $result + $stonesInHeap;
+        }
+
+        $result = $prime * $result + $this->player;
+        $result = $prime * $result + $this->operation->getX;
+        $result = $prime * $result + $this->operation->getOperator;
+
+        return $result;
+    }*/
+
 
     public function setHeap($index, $newCountOfStones)
     {
         $this->stonesInHeaps[$index] = $newCountOfStones;
         $this->updateSum();
     }
-
 
     public function getStep()
     {
@@ -482,7 +502,16 @@ $state->setHeap(1, 10);//нумерация с нуля, все нормальн
 $state->printHeaps();
 */
 
+$state = State::withStonesInHeaps(array("0" => "8", "1" => "2"));
+$state1 = State::withStateAndOperation($state, new Operation('+', 5));
+$state2 = State::withStateAndOperation($state, new Operation('+', 5));
 
+if($state1->equals($state2)) {
+    echo "привет";
+}
+else {
+    echo "пока";
+}
 /* array - unset - delete, then - array_values()- переиндексация
  * extends ArrayObject
  * $student = Student::withRow( $row );
@@ -514,17 +543,20 @@ class Operation
         return -1;
     }
 
-    public function equals($operation){
+    public function equals($operation)
+    {
         return $this->x == $operation->getX() &&
-                $this->operator == $operation->getOperator();
+        $this->operator == $operation->getOperator();
     }
 
 
-    public function getX(){
+    public function getX()
+    {
         return $this->x;
     }
 
-    public function getOperator(){
+    public function getOperator()
+    {
         return $this->operator;
     }
 
@@ -536,12 +568,23 @@ class Operation
 
 /*
  * Test Operation
- * $operation = new Operation('x', 3);
-$operation1 = new Operation('+', 1);
+  $operation = new Operation('x', 3);
+$operation1 = new Operation('x', 3);
+
+
+$state = State::withStonesInHeaps(array("0" => "8", "1" => "2"));
+$state1 = State::withStateAndOperation($state, $operation);
+$state2 = State::withStateAndOperation($state, $operation);
+//$state1->setIndex(9);
 
 echo $operation->apply(4);
 echo " ";
-echo $operation1->apply(4); */
+echo $operation1->apply(4);
+
+echo "\r\n".spl_object_hash($state1)."\r\n";
+echo spl_object_hash($state2);
+*/
+
 
 
 class Task
