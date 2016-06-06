@@ -42,6 +42,8 @@ class GameTree
 
         //$this->toJSON($this->startState);
         echo "debug\r\n";
+
+        //$this->checkSubgraph($state);
     }
 
     public function getTree()
@@ -255,7 +257,7 @@ class GameTree
 
 }
 
-/* Test Game
+/* Test Game*/
 $operation1 = new Operation('x', 2);
 $operation2 = new Operation('+', 1);
 $operations = array(0 => $operation1, 1 => $operation2);
@@ -263,7 +265,39 @@ $operations = array(0 => $operation1, 1 => $operation2);
 $stones = array(0 => 7, 1 => 31);
 
 $game = new GameTree($operations, $stones, true, 73, 0, 10);
-$game->start();*/
+$game->start();
+
+
+$operation11 = new Operation('x', 2);
+$operation12 = new Operation('+', 1);
+$dummystrategy = State::withStonesInHeaps(array(0 => 7, 1 => 31));
+
+//step 1
+$possibleState = State::withStonesInHeaps(array(0 => 14, 1 => 31));
+$possibleState->setStep(1);
+$possibleState->setPlayer(0);
+$possibleState->setOperation($operation11);
+
+$possibleStates = array();
+array_push($possibleStates, $possibleState);
+$dummystrategy->setNextStates($possibleStates);
+//2
+$possibleState1 = State::withStonesInHeaps(array(0 => 14, 1 => 62));
+$possibleState1->setStep(2);
+$possibleState1->setPlayer(1);
+$possibleState1->setWin();
+$possibleState1->setOperation($operation11);
+
+$possibleStates = array();
+array_push($possibleStates, $possibleState1);
+$dummystrategy->getNextStates()[0]->setNextStates($possibleStates);
+echo "\r\n\r\n ~~~~~~~~~~~~~\r\n";
+
+if ($game->getTree()->checkSubgraph($dummystrategy)) {
+    echo "hello";
+} else {
+    echo "gtfo";
+}
 
 
 class State
@@ -322,36 +356,46 @@ class State
     }
 
     public function checkSubgraph($strategy)
-    {
-        //TODO: add check что заключительными заканчиваются ветки
-        $isSubGraph = true;
+    {//TODO: add check что заключительными заканчиваются ветки
+        if ($this->equals($strategy)) {
+            $isSubGraph = true;
 
-        $usedChildOfSmallTree = array();
+            $treeChildren = $this->getNextStates();
+            //$treeChildrenCount = count($treeChildren);
 
+            $strategyChildren = $strategy->getNextStates();
+            $strategyChildrenCount = count($strategyChildren);
 
-        $treeChildren = $this->getNextStates();
-        $treeChildrenCount = count($treeChildren);
-
-        $strategyChildren = $strategy->getNextStates();
-        $strategyChildrenCount = count($treeChildren);
-
-
-        for ($i = 0; $i < $strategyChildren; $i++) {
-            for ($j = 0; $j < $treeChildrenCount; $j++) {
-                //if (!$usedChildOfSmallTree[$i]) {
-                if ($strategyChildren[$i]->equals($treeChildren[$j])) {
-                    $isSubGraph &= $treeChildren[$j]->checkSubgraph($strategyChildren[$i]);
-                    $usedChildOfSmallTree[$i] = true;
-                }
-                //}
+            $usedChildOfStrategy = array();
+            for ($i = 0; $i < $strategyChildrenCount; $i++) {
+                $usedChildOfStrategy[$i] = false;
             }
+
+            if (isset($strategyChildren)) {
+                if (isset($treeChildren)) {
+                    forEach ($strategyChildren as $key1 => $strategyChild) {
+                        forEach ($treeChildren as $key2 => $treeChild) {
+                            if ($strategyChild->equals($treeChild)) {
+                                $isSubGraph = $treeChild->checkSubgraph($strategyChild);
+                                $usedChildOfStrategy[$key1] = true;
+                            }
+                        }
+                    }
+                } else {
+                    return false;
+                }
+
+                foreach ($strategyChildren as $key => $strategyChild) {
+                    if (!$usedChildOfStrategy[$key]) {
+                        return false;
+                    }
+                }
+            }
+
+            return $isSubGraph;
+        } else {
+            return false;
         }
-
-        /*for ($i = 0; $i < $strategyChildrenCount; $i++){
-            if (!$usedChildOfSmallTree[$i]) return false;
-        }*/
-
-        return $isSubGraph;
     }
 
     public function updateSum()
@@ -385,36 +429,50 @@ class State
 
     public function equals($state)
     {
-        foreach ($this->stonesInHeaps as $key1 => $stonesInThisHeap){
-            foreach ($state->getStonesInHeaps() as $key2 => $stonesInStateHeap){
-                if (!$stonesInThisHeap == $stonesInStateHeap)
-                    return false;
+        if ($state == null)
+            return false;
+
+        if (isset($this->stonesInHeaps)) {
+            if ($state->getStonesInHeaps() != null) {
+                foreach ($this->stonesInHeaps as $key1 => $stonesInThisHeap) {
+                    if ($stonesInThisHeap != $state->getStonesInHeaps()[$key1])
+                        return false;
+
+                }
+            } else {
+                return false;
             }
         }
 
-        return ($this->getStep() == $state->getStep()) &&
-            ($this->getPlayer() == $state->getPlayer()) &&
-            ($this->getOperation()->equals($state->getOperation()));
+        if (isset($this->operation) && ($state->getOperation() != null)) {
+            if (!$this->operation->equals($state->getOperation())) {
+                return false;
+            }
+        }
+
+
+        return ($this->step == $state->getStep()) &&
+        ($this->player == $state->getPlayer());
 
     }
 
-   /* public function hashCode()
-    {//no nextstates
-        $prime = 31;
-        $result = 1;
-        $result = $prime * $result + $this->step;
-        $result = $prime * $result + count($this->nextStates);
+    /* public function hashCode()
+     {//no nextstates
+         $prime = 31;
+         $result = 1;
+         $result = $prime * $result + $this->step;
+         $result = $prime * $result + count($this->nextStates);
 
-        foreach ($this->stonesInHeaps as $key => $stonesInHeap) {
-            $result = $prime * $result + $stonesInHeap;
-        }
+         foreach ($this->stonesInHeaps as $key => $stonesInHeap) {
+             $result = $prime * $result + $stonesInHeap;
+         }
 
-        $result = $prime * $result + $this->player;
-        $result = $prime * $result + $this->operation->getX;
-        $result = $prime * $result + $this->operation->getOperator;
+         $result = $prime * $result + $this->player;
+         $result = $prime * $result + $this->operation->getX;
+         $result = $prime * $result + $this->operation->getOperator;
 
-        return $result;
-    }*/
+         return $result;
+     }*/
 
 
     public function setHeap($index, $newCountOfStones)
@@ -487,6 +545,12 @@ class State
     {
         return $this->operation;
     }
+
+    //for debug only
+    public function setOperation($operation)
+    {
+        $this->operation = $operation;
+    }
 }
 
 /*Test State
@@ -502,20 +566,12 @@ $state->setHeap(1, 10);//нумерация с нуля, все нормальн
 $state->printHeaps();
 */
 
-$state = State::withStonesInHeaps(array("0" => "8", "1" => "2"));
-$state1 = State::withStateAndOperation($state, new Operation('+', 5));
-$state2 = State::withStateAndOperation($state, new Operation('+', 5));
 
-if($state1->equals($state2)) {
-    echo "привет";
-}
-else {
-    echo "пока";
-}
 /* array - unset - delete, then - array_values()- переиндексация
  * extends ArrayObject
  * $student = Student::withRow( $row );
  * */
+
 
 class Operation
 {
@@ -584,7 +640,6 @@ echo $operation1->apply(4);
 echo "\r\n".spl_object_hash($state1)."\r\n";
 echo spl_object_hash($state2);
 */
-
 
 
 class Task
