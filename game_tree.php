@@ -278,8 +278,14 @@ $possibleState->setStep(1);
 $possibleState->setPlayer(0);
 $possibleState->setOperation($operation11);
 
+$possibleState0 = State::withStonesInHeaps(array(0 => 7, 1 => 62));
+$possibleState0->setStep(1);
+$possibleState0->setPlayer(0);
+$possibleState0->setOperation($operation11);
+
 $possibleStates = array();
 array_push($possibleStates, $possibleState);
+array_push($possibleStates, $possibleState0);
 $dummystrategy->setNextStates($possibleStates);
 //2
 $possibleState1 = State::withStonesInHeaps(array(0 => 14, 1 => 62));
@@ -288,9 +294,19 @@ $possibleState1->setPlayer(1);
 $possibleState1->setWin();
 $possibleState1->setOperation($operation11);
 
+$possibleState2 = State::withStonesInHeaps(array(0 => 14, 1 => 62));
+$possibleState2->setStep(2);
+$possibleState2->setPlayer(1);
+$possibleState2->setWin();
+$possibleState2->setOperation($operation11);
+
 $possibleStates = array();
 array_push($possibleStates, $possibleState1);
 $dummystrategy->getNextStates()[0]->setNextStates($possibleStates);
+$poss2 = array();
+array_push($poss2, $possibleState2);
+$dummystrategy->getNextStates()[1]->setNextStates($poss2);
+
 echo "\r\n\r\n ~~~~~~~~~~~~~\r\n";
 
 if ($game->getTree()->checkSubgraph($dummystrategy)) {
@@ -393,6 +409,7 @@ class State
             }
 
             return $isSubGraph;
+
         } else {
             return false;
         }
