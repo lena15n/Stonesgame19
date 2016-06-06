@@ -88,6 +88,105 @@ class question_stonesgame_qtype extends question_shortanswer_qtype {
      */
     function save_question_options($question) {
         // Get old versions of the objects
+        if (!$oldoptions = get_records('question_stonesgame', 'question', $question->id, 'answer ASC')) {
+            $oldoptions = array();
+        }
+
+
+
+        $answers = json_decode(stripslashes($question->answers));
+
+        /*проверяем ответы на корректность, если что - удаляем
+         *
+         * foreach($answers as $key=>$a){
+            if(!$a || !$a->draw || !$a->shape || !$a->text){
+                unset($answers[$key]);
+            }
+        }*/
+
+        if(!$answers){
+            $result->notice = get_string("failedloadinganswers", "qtype_ubhotspots");
+            return $result;
+        }
+
+        if (!$oldanswers = get_records("question_answers", "question",$question->id, "id ASC")) {
+            $oldanswers = array();
+        }
+
+        // TODO - Javascript Interface for fractions in the editor
+        $fraction = round(1 / count($answers), 2);
+
+        foreach($answers as $a){
+
+            if ($answer = array_shift($oldanswers)) {  // Existing answer, so reuse it
+
+                $answer->answer     = addslashes(json_encode($a));
+                $answer->fraction   = $fraction;
+                $answer->feedback = '';
+                if (!update_record("question_answers", $answer)) {
+                    $result->error = "Could not update quiz answer! (id=$answer->id)";
+                    return $result;
+                }
+            } else {
+
+                unset($answer);
+                $answer->answer   = addslashes(json_encode($a));
+                $answer->question = $question->id;
+                $answer->fraction = $fraction;
+                $answer->feedback = '';
+                if (!$answer->id = insert_record("question_answers", $answer)) {
+                    $result->error = "Could not insert quiz answer! ";
+                    return $result;
+                }
+            }
+
+        }
+
+
+        // delete old answer records
+        if (!empty($oldanswers)) {
+            foreach($oldanswers as $oa) {
+                delete_records('question_answers', 'id', $oa->id);
+            }
+        }
+
+        $update = true;
+        $options = get_record("qtype_ubhotspots", "question", $question->id);
+        if (!$options) {
+            $update = false;
+            $options = new stdClass;
+            $options->question = $question->id;
+        }
+
+        $options->hseditordata = addslashes($question->hseditordata);
+
+        if ($update) {
+            if (!update_record("qtype_ubhotspots", $options)) {
+                $result->error = "Could not update quiz ubhotspots options! (id=$options->id)";
+                return $result;
+            }
+        } else {
+            if (!insert_record("qtype_ubhotspots", $options)) {
+                $result->error = "Could not insert quiz ubhotspots options!";
+                return $result;
+            }
+        }
+
+        return true;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if (!$oldanswers = get_records('question_answers', 'question', $question->id, 'id ASC')) {
             $oldanswers = array();
         }
@@ -188,39 +287,6 @@ class question_stonesgame_qtype extends question_shortanswer_qtype {
         return true;
     }
 
-    function save_stonesgame_units($question) {
-        $result = new stdClass;
-
-        // Delete the units previously saved for this question.
-        delete_records('question_stonesgame_units', 'question', $question->id);
-
-        // Nothing to do.
-        if (!isset($question->multiplier)) {
-            $result->units = array();
-            return $result;
-        }
-
-        // Save the new units.
-        $units = array();
-        foreach ($question->multiplier as $i => $multiplier) {
-            // Discard any unit which doesn't specify the unit or the multiplier
-            if (!empty($question->multiplier[$i]) && !empty($question->unit[$i])) {
-                $units[$i] = new stdClass;
-                $units[$i]->question = $question->id;
-                $units[$i]->multiplier = $this->apply_unit($question->multiplier[$i], array());
-                $units[$i]->unit = $question->unit[$i];
-                if (! insert_record('question_stonesgame_units', $units[$i])) {
-                    $result->error = 'Unable to save unit ' . $units[$i]->unit . ' to the Databse';
-                    return $result;
-                }
-            }
-        }
-        unset($question->multiplier, $question->unit);
-
-        $result->units = &$units;
-        return $result;
-    }
-
     /**
      * Deletes question from the question-type specific tables
      *
@@ -228,8 +294,11 @@ class question_stonesgame_qtype extends question_shortanswer_qtype {
      * @param object $question  The question being deleted
      */
     function delete_question($questionid) {
-        delete_records("question_stonesgame", "question", $questionid);
-        delete_records("question_stonesgame_units", "question", $questionid);
+        delete_records("question_stonesgame1", "question", $questionid);
+        delete_records("question_stonesgame_student", "question", $questionid);
+        delete_records("question_stonesgame_answer", "question", $questionid);
+        delete_records("question_stonesgame_position", "question", $questionid);
+        delete_records("question_stonesgame_result", "question", $questionid);
         return true;
     }
 
@@ -240,27 +309,7 @@ class question_stonesgame_qtype extends question_shortanswer_qtype {
         return false;
     }
 
-    /**
-     * Checks whether a response matches a given answer, taking the tolerance
-     * and units into account. Returns a true for if a response matches the
-     * answer, false if it doesn't.
-     */
-    function test_response(&$question, &$state, $answer) {
-        // Deal with the match anything answer.
-        if ($answer->answer === '*') {
-            return true;
-        }
 
-        $response = $this->apply_unit(stripslashes($state->responses['']), $question->options->units);
-
-        if ($response === false) {
-            return false; // The student did not type a number.
-        }
-
-        // The student did type a number, so check it with tolerances.
-        $this->get_tolerance_interval($answer);
-        return ($answer->min <= $response && $response <= $answer->max);
-    }
 
     function get_correct_responses(&$question, &$state) {
         $correct = parent::get_correct_responses($question, $state);
@@ -349,144 +398,8 @@ class question_stonesgame_qtype extends question_shortanswer_qtype {
         return true;
     }
 
-    /**
-     * Checks if the $rawresponse has a unit and applys it if appropriate.
-     *
-     * @param string $rawresponse  The response string to be converted to a float.
-     * @param array $units         An array with the defined units, where the
-     *                             unit is the key and the multiplier the value.
-     * @return float               The rawresponse with the unit taken into
-     *                             account as a float.
-     */
-    function apply_unit($rawresponse, $units) {
-        // Make units more useful
-        $tmpunits = array();
-        foreach ($units as $unit) {
-            $tmpunits[$unit->unit] = $unit->multiplier;
-        }
-        // remove spaces and normalise decimal places.
-        $rawresponse = trim($rawresponse) ;
-        $search  = array(' ', ',');
-        // test if a . is present or there are multiple , (i.e. 2,456,789 ) so that we don't need spaces and ,
-        if ( strpos($rawresponse,'.' ) !== false || substr_count($rawresponse,',') > 1 ) {
-            $replace = array('', '');
-        }else { // remove spaces and normalise , to a . . 
-            $replace = array('', '.');
-        }
-        $rawresponse = str_replace($search, $replace, $rawresponse);
 
 
-        // Apply any unit that is present.
-        if (ereg('^([+-]?([0-9]+(\\.[0-9]*)?|\\.[0-9]+)([eE][-+]?[0-9]+)?)([^0-9].*)?$',
-                $rawresponse, $responseparts)) {
-
-            if (!empty($responseparts[5])) {
-
-                if (isset($tmpunits[$responseparts[5]])) {
-                    // Valid number with unit.
-                    return (float)$responseparts[1] / $tmpunits[$responseparts[5]];
-                } else {
-                    // Valid number with invalid unit. Must be wrong.
-                    return false;
-                }
-
-            } else {
-                // Valid number without unit.
-                return (float)$responseparts[1];
-            }
-        }
-        // Invalid number. Must be wrong.
-        return false;
-    }
-
-    /// BACKUP FUNCTIONS ////////////////////////////
-
-    /**
-     * Backup the data in the question
-     *
-     * This is used in question/backuplib.php
-     */
-    function backup($bf,$preferences,$question,$level=6) {
-
-        $status = true;
-
-        $stonesgames = get_records('question_stonesgame', 'question', $question, 'id ASC');
-        //If there are stonesgames
-        if ($stonesgames) {
-            //Iterate over each stonesgame
-            foreach ($stonesgames as $stonesgame) {
-                $status = fwrite ($bf,start_tag("stonesgame",$level,true));
-                //Print stonesgame contents
-                fwrite ($bf,full_tag("ANSWER",$level+1,false,$stonesgame->answer));
-                fwrite ($bf,full_tag("TOLERANCE",$level+1,false,$stonesgame->tolerance));
-                //Now backup stonesgame_units
-                $status = question_backup_stonesgame_units($bf,$preferences,$question,7);
-                $status = fwrite ($bf,end_tag("stonesgame",$level,true));
-            }
-            //Now print question_answers
-            $status = question_backup_answers($bf,$preferences,$question);
-        }
-        return $status;
-    }
-
-    /// RESTORE FUNCTIONS /////////////////
-
-    /**
-     * Restores the data in the question
-     *
-     * This is used in question/restorelib.php
-     */
-    function restore($old_question_id,$new_question_id,$info,$restore) {
-
-        $status = true;
-
-        //Get the stonesgame array
-        if (isset($info['#']['stonesgame'])) {
-            $stonesgames = $info['#']['stonesgame'];
-        } else {
-            $stonesgames = array();
-        }
-
-        //Iterate over stonesgames
-        for($i = 0; $i < sizeof($stonesgames); $i++) {
-            $num_info = $stonesgames[$i];
-
-            //Now, build the question_stonesgame record structure
-            $stonesgame = new stdClass;
-            $stonesgame->question = $new_question_id;
-            $stonesgame->answer = backup_todb($num_info['#']['ANSWER']['0']['#']);
-            $stonesgame->tolerance = backup_todb($num_info['#']['TOLERANCE']['0']['#']);
-
-            //We have to recode the answer field
-            $answer = backup_getid($restore->backup_unique_code,"question_answers",$stonesgame->answer);
-            if ($answer) {
-                $stonesgame->answer = $answer->new_id;
-            }
-
-            //The structure is equal to the db, so insert the question_stonesgame
-            $newid = insert_record ("question_stonesgame", $stonesgame);
-
-            //Do some output
-            if (($i+1) % 50 == 0) {
-                if (!defined('RESTORE_SILENTLY')) {
-                    echo ".";
-                    if (($i+1) % 1000 == 0) {
-                        echo "<br />";
-                    }
-                }
-                backup_flush(300);
-            }
-
-            //Now restore stonesgame_units
-            $status = question_restore_stonesgame_units ($old_question_id,$new_question_id,$num_info,$restore);
-
-            if (!$newid) {
-                $status = false;
-            }
-        }
-
-        return $status;
-    }
 
     function print_question_formulation_and_controls(&$question, &$state, $cmoptions, $options) {
         global $CFG;
@@ -512,35 +425,6 @@ class question_stonesgame_qtype extends question_shortanswer_qtype {
         include("$CFG->dirroot/question/type/stonesgame/question.html");
 
     }
-
-    /**
-     * Runs all the code required to set up and save an essay question for testing purposes.
-     * Alternate DB table prefix may be used to facilitate data deletion.
-     */
-    function generate_test($name, $courseid = null) {
-        list($form, $question) = default_questiontype::generate_test($name, $courseid);
-        $question->category = $form->category;
-
-        $form->questiontext = "What is 674 * 36?";
-        $form->generalfeedback = "Thank you";
-        $form->penalty = 0.1;
-        $form->defaultgrade = 1;
-        $form->noanswers = 3;
-        $form->answer = array('24264', '24264', '1');
-        $form->tolerance = array(10, 100, 0);
-        $form->fraction = array(1, 0.5, 0);
-        $form->nounits = 2;
-        $form->unit = array(0 => null, 1 => null);
-        $form->multiplier = array(1, 0);
-        $form->feedback = array('Very good', 'Close, but not quite there', 'Well at least you tried....');
-
-        if ($courseid) {
-            $course = get_record('course', 'id', $courseid);
-        }
-
-        return $this->save_question($question, $form, $course);
-    }
-
 }
 
 // INITIATION - Without this line the question type is not in use.

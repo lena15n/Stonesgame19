@@ -5,6 +5,18 @@ class Verification {
 
     public static function check_student_answers($studentAnswers, $answers){
         //check answers and return results (MB save in DB or not)
+
+        //обработка
+        
+        //check winner
+       
+        //check strategy
+        $strategy = $studentAnswers["strategy"];
+        
+        $answertree = $answers["tree"];
+        $answertree->checkSubgraph($strategy);
+        
+        //check maxcount
     }
 
     public static function build_answers($params){
@@ -27,8 +39,6 @@ class Verification {
 
 
         array_push($answers, $winner);
-        array_push($answers, $strategy);
-        array_push($answers, $maxcount);
         array_push($answers, $tree);
 
         return $answers;

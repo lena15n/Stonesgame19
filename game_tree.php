@@ -44,11 +44,13 @@ class GameTree
         echo "debug\r\n";
     }
 
-    public function getTree(){
-        //TODO
-        //MB перевод в json
-        $tree = 0;
-        return $tree;
+    public function getTree()
+    {
+        if ($this->startState->getWin() != 0) {
+            $this->start();
+        }
+
+        return $this->startState;
     }
 
     public function getWinner()
@@ -60,11 +62,22 @@ class GameTree
         return $this->winner;
     }
 
+    public function checkSubgraph($strategy)
+    {
+        return $this->startState->checkSubgraph($strategy);
+    }
+
+
+    public function getMaxCount($strategy)
+    {
+
+    }
+
     private function buildGameTreeBranch($queue)
     {
         if (!empty($queue)) {//можно и без очереди, просто контроль по step
             $currentState = array_shift($queue);//извлекаем первый эл т из очереди
-            if ($currentState->getStep() >= $this->maxDepth){
+            if ($currentState->getStep() >= $this->maxDepth) {
                 return;
             }
 
@@ -122,8 +135,7 @@ class GameTree
                         echo "Next possible state -> ";
                         $possibleState->printHeaps();
                     }
-                }
-                else {
+                } else {
                     if ($possibleState->getSum() > $this->endOfGameSum) {
                         $possibleState->setWin();
                         array_push($possibleStates, $possibleState);
@@ -309,6 +321,38 @@ class State
         return $instance;
     }
 
+    public function checkSubgraph($strategy){
+        //TODO: add check что заключительными заканчиваются ветки
+        $isSubGraph = true;
+
+        $usedChildOfSmallTree = array();
+
+
+        $treeChildren = $this->getNextStates();
+        $treeChildrenCount = count($treeChildren);
+
+        $strategyChildren = $strategy->getNextStates();
+        $strategyChildrenCount = count($treeChildren);
+
+
+        for ($i = 0; $i < $strategyChildren; $i++) {
+            for ($j = 0; $j < $treeChildrenCount; $j++) {
+                //if (!$usedChildOfSmallTree[$i]) {
+                    if ($strategyChildren[$i]->equals($treeChildren[$j])) {
+                        $isSubGraph &= $treeChildren[$j]->checkSubgraph($strategyChildren[$i]);
+                        $usedChildOfSmallTree[$i] = true;
+                    }
+                //}
+            }
+        }
+
+        /*for ($i = 0; $i < $strategyChildrenCount; $i++){
+            if (!$usedChildOfSmallTree[$i]) return false;
+        }*/
+
+        return $isSubGraph;
+    }
+
     public function updateSum()
     {
         $result = 0;
@@ -336,6 +380,20 @@ class State
             $i++;
         }
         echo ")";
+    }
+
+    public function equals($state)
+    {
+        $thisNextStates = $this->getNextStates();
+        $stateNextStates = $state->getNextStates();
+
+        for
+
+        return ($this->getStep() == $state->getStep()) &&
+                ($this->getPlayer() == $state->getPlayer()) &&
+                ($this->getOperation()->equals($state->getOperation())) &&
+                ();
+
     }
 
     public function setHeap($index, $newCountOfStones)
@@ -404,6 +462,11 @@ class State
     {
         return $this->stonesInHeaps;
     }
+
+    public function getOperation()
+    {
+        return $this->operation;
+    }
 }
 
 /*Test State
@@ -449,6 +512,20 @@ class Operation
         }
 
         return -1;
+    }
+
+    public function equals($operation){
+        return $this->x == $operation->getX() &&
+                $this->operator == $operation->getOperator();
+    }
+
+
+    public function getX(){
+        return $this->x;
+    }
+
+    public function getOperator(){
+        return $this->operator;
     }
 
     public function printOperation()
