@@ -39,10 +39,6 @@ class GameTree
         $this->findWinner();
 
         $this->cutBranches($this->startState);
-
-        //$this->toJSON($this->startState);
-        echo "debug\r\n";
-
     }
 
     public function getWinner()
@@ -64,9 +60,33 @@ class GameTree
         }
     }
 
-    public function isMaxCountCorrect($strategy)
+    public function isMaxCountCorrect($strategy, $maxcount)
     {
+        $result = $this->searchMaxCount($strategy);
 
+        return $result == $maxcount;
+    }
+
+    public function searchMaxCount($currentState){//находит макс кол-во ходов победителя
+        $result = array();
+
+        if ($currentState->getWin() != 1) {
+            foreach ($currentState->getNextStates() as $key => $nextState) {
+                if ($nextState->getPlayer() == $this->winner){
+                    $value = $this->searchMaxCount($nextState);
+                    array_push($result, $value + 1);
+                }
+                else {
+                    $value = $this->searchMaxCount($nextState);
+                    array_push($result, $value);
+                }
+            }
+        }
+        else {
+            return 0;
+        }
+
+        return max($result);
     }
 
     private function areThereAllPossibleStatesOfEnemyAndStrategyEndsByWinStates($currentState){
@@ -424,6 +444,16 @@ if ($game->isStrategyCorrect($dummystrategy)) {
     echo "gtfo";
 }
 
+echo "\r\n";
+
+echo $game->searchMaxCount($dummystrategy);
+
+/*if ($game->isMaxCountCorrect($dummystrategy, 2)){
+    echo "ok";
+}
+else {
+    echo "no";
+}*/
 
 
 

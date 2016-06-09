@@ -6,18 +6,8 @@
  * @subpackage questiontypes
  *//** */
 
-require_once("$CFG->dirroot/question/type/shortanswer/questiontype.php");
-
 /**
  * stonesgame QUESTION TYPE CLASS
- *
- * This class contains some special features in order to make the
- * question type embeddable within a multianswer (cloze) question
- *
- * This question type behaves like shortanswer in most cases.
- * Therefore, it extends the shortanswer question type...
- * @package questionbank
- * @subpackage questiontypes
  */
 class question_stonesgame_qtype extends default_questiontype {
 
@@ -26,6 +16,7 @@ class question_stonesgame_qtype extends default_questiontype {
     }
 
     function get_question_options(&$question) {
+        //извлекаем необходимые options вопроса из БД
         if (!$question->options = get_record('qtype_stonesgame', 'question', $question->id)) {
             notify('Error: Missing question options for stonesgame question'.$question->id.'!');
             return false;
@@ -50,6 +41,7 @@ class question_stonesgame_qtype extends default_questiontype {
             $oldoptions = array();
         }
 
+        //заполняем options 
         $answers = json_decode(stripslashes($question->answers));
 
         /*проверяем ответы на корректность, если что - удаляем
@@ -61,7 +53,7 @@ class question_stonesgame_qtype extends default_questiontype {
         }*/
 
         if(!$answers){
-            $result->notice = "Провал";//get_string("failedloadinganswers", "qtype_ubhotspots");
+            $result->notice = "Провал";
             return $result;
         }
 
@@ -69,7 +61,7 @@ class question_stonesgame_qtype extends default_questiontype {
             $oldanswers = array();
         }
 
-        // TODO - Javascript Interface for fractions in the editor
+        
         $fraction = round(1 / count($answers), 2);
 
         foreach($answers as $a){
