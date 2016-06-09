@@ -13,7 +13,7 @@ class GameTree
 
 
     private $winner;
-    private $startState;
+    public $startState;
 
 
     public function __construct($operations, $stonesInHeaps, $moreOrEqual, $endOfGameSum, $firstGamer, $maxDepth)
@@ -70,7 +70,7 @@ class GameTree
     public function searchMaxCount($currentState){//находит макс кол-во ходов победителя
         $result = array();
 
-        if ($currentState->getWin() != 1) {
+        if ($currentState->getNextStates() != null) {
             foreach ($currentState->getNextStates() as $key => $nextState) {
                 if ($nextState->getPlayer() == $this->winner){
                     $value = $this->searchMaxCount($nextState);
@@ -355,7 +355,7 @@ class GameTree
 }
 
 /* Test Game*/
-$operation1 = new Operation('x', 2);
+/*$operation1 = new Operation('x', 2);
 $operation2 = new Operation('+', 1);
 $operations = array(0 => $operation1, 1 => $operation2);
 
@@ -446,7 +446,62 @@ if ($game->isStrategyCorrect($dummystrategy)) {
 
 echo "\r\n";
 
-echo $game->searchMaxCount($dummystrategy);
+echo $game->searchMaxCount($dummystrategy);*/
+
+
+
+$operation1 = new Operation('x', 2);
+$operation2 = new Operation('+', 1);
+$operations = array(0 => $operation1, 1 => $operation2);
+
+$stones = array(0 => 7, 1 => 31);
+
+$game = new GameTree($operations, $stones, true, 73, 0, 10);
+$game->start();
+
+
+$operation11 = new Operation('x', 2);
+$operation12 = new Operation('+', 1);
+$dummystrategy = State::withStonesInHeaps(array(0 => 7, 1 => 31));
+
+//step 1
+$possibleState = State::withStonesInHeaps(array(0 => 14, 1 => 31));
+$possibleState->setStep(1);
+$possibleState->setPlayer(0);
+$possibleState->setOperation($operation11);
+
+$possibleState0 = State::withStonesInHeaps(array(0 => 7, 1 => 62));
+$possibleState0->setStep(1);
+$possibleState0->setPlayer(0);
+$possibleState0->setOperation($operation11);
+
+$possibleStates = array();
+array_push($possibleStates, $possibleState);
+array_push($possibleStates, $possibleState0);
+$dummystrategy->setNextStates($possibleStates);
+//2
+$possibleState1 = State::withStonesInHeaps(array(0 => 14, 1 => 62));
+$possibleState1->setStep(2);
+$possibleState1->setPlayer(1);
+$possibleState1->setWin();
+$possibleState1->setOperation($operation11);
+
+$possibleState2 = State::withStonesInHeaps(array(0 => 14, 1 => 62));
+$possibleState2->setStep(2);
+$possibleState2->setPlayer(1);
+$possibleState2->setWin();
+$possibleState2->setOperation($operation11);
+
+$possibleStates = array();
+array_push($possibleStates, $possibleState1);
+$dummystrategy->getNextStates()[0]->setNextStates($possibleStates);
+$poss2 = array();
+array_push($poss2, $possibleState2);
+$dummystrategy->getNextStates()[1]->setNextStates($poss2);
+
+echo "\r\n\r\n ~~~~~~~~~~~~~\r\n";
+
+echo $game->searchMaxCount($game->startState);
 
 /*if ($game->isMaxCountCorrect($dummystrategy, 2)){
     echo "ok";
@@ -454,6 +509,8 @@ echo $game->searchMaxCount($dummystrategy);
 else {
     echo "no";
 }*/
+
+
 
 
 
