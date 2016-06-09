@@ -19,69 +19,27 @@ require_once("$CFG->dirroot/question/type/shortanswer/questiontype.php");
  * @package questionbank
  * @subpackage questiontypes
  */
-class question_stonesgame_qtype extends question_shortanswer_qtype {
+class question_stonesgame_qtype extends default_questiontype {
 
     function name() {
         return 'stonesgame';
     }
 
     function get_question_options(&$question) {
-        // Get the question answers and their respective tolerances
-        // Note: question_stonesgame is an extension of the answer table rather than
-        //       the question table as is usually the case for qtype
-        //       specific tables.
-        global $CFG;
-        if (!$question->options->answers = get_records_sql(
-                                "SELECT a.*, n.tolerance " .
-                                "FROM {$CFG->prefix}question_answers a, " .
-                                "     {$CFG->prefix}question_stonesgame n " .
-                                "WHERE a.question = $question->id " .
-                                "    AND   a.id = n.answer " .
-                                "ORDER BY a.id ASC")) {
-            notify('Error: Missing question answer for stonesgame question ' . $question->id . '!');
+        if (!$question->options = get_record('qtype_stonesgame', 'question', $question->id)) {
+            notify('Error: Missing question options for stonesgame question'.$question->id.'!');
             return false;
         }
-        $this->get_stonesgame_units($question);
 
-        // If units are defined we strip off the default unit from the answer, if
-        // it is present. (Required for compatibility with the old code and DB).
-        if ($defaultunit = $this->get_default_stonesgame_unit($question)) {
-            foreach($question->options->answers as $key => $val) {
-                $answer = trim($val->answer);
-                $length = strlen($defaultunit->unit);
-                if ($length && substr($answer, -$length) == $defaultunit->unit) {
-                    $question->options->answers[$key]->answer =
-                            substr($answer, 0, strlen($answer)-$length);
-                }
-            }
+        if (!$question->options->answers = get_records('qtype_stonesgame_answer', 'question', $question->id)) {
+            notify('Error: Missing question answers for stonesgame question'.$question->id.'!');
+            return false;
         }
+
         return true;
+
     }
 
-    function get_stonesgame_units(&$question) {
-        if ($units = get_records('question_stonesgame_units',
-                                         'question', $question->id, 'id ASC')) {
-            $units  = array_values($units);
-        } else {
-            $units = array();
-        }
-        foreach ($units as $key => $unit) {
-            $units[$key]->multiplier = clean_param($unit->multiplier, PARAM_NUMBER);
-        }
-        $question->options->units = $units;
-        return true;
-    }
-
-    function get_default_stonesgame_unit(&$question) {
-        if (isset($question->options->units[0])) {
-            foreach ($question->options->units as $unit) {
-                if (abs($unit->multiplier - 1.0) < '1.0e-' . ini_get('precision')) {
-                    return $unit;
-                }
-            }
-        }
-        return false;
-    }
 
     /**
      * Save the units and the answers associated with this question.
@@ -91,8 +49,6 @@ class question_stonesgame_qtype extends question_shortanswer_qtype {
         if (!$oldoptions = get_records('question_stonesgame', 'question', $question->id, 'answer ASC')) {
             $oldoptions = array();
         }
-
-
 
         $answers = json_decode(stripslashes($question->answers));
 
@@ -105,11 +61,11 @@ class question_stonesgame_qtype extends question_shortanswer_qtype {
         }*/
 
         if(!$answers){
-            $result->notice = get_string("failedloadinganswers", "qtype_ubhotspots");
+            $result->notice = "Провал";//get_string("failedloadinganswers", "qtype_ubhotspots");
             return $result;
         }
 
-        if (!$oldanswers = get_records("question_answers", "question",$question->id, "id ASC")) {
+        if (!$oldanswers = get_records("question_stonesgame_answer", "question",$question->id, "id ASC")) {
             $oldanswers = array();
         }
 

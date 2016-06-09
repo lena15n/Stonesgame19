@@ -7,18 +7,25 @@ class Verification {
         //check answers and return results (MB save in DB or not)
 
         //обработка
-        
+
+        $result = true;
+
         //check winner
-       
+        $winner = $studentAnswers["winner"];
+        $answerwinner = $answers["winner"];
+
+        $result = ($winner == $answerwinner);
+
         //check strategy
         $strategy = $studentAnswers["strategy"];
-        
-        $answertree = $answers["tree"];
-        $answerwinner = $answers["winner"];
-        
-        $answertree->isStrategyCorrect($strategy, $answerwinner);
+        $answergame = $answers["game"];//лучше хранить всю game, а не $answertree = $answers["tree"];
+        $result = ($answergame->isStrategyCorrect($strategy, $answerwinner)) && $result;
         
         //check maxcount
+        $maxcount = $studentAnswers["maxcount"];
+        $result = ($answergame->isMaxCountCorrect($strategy, $maxcount)) && $result;
+
+        return $result;
     }
 
     public static function build_answers($params){

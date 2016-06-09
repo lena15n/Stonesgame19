@@ -43,16 +43,6 @@ class GameTree
         //$this->toJSON($this->startState);
         echo "debug\r\n";
 
-        //$this->checkSubgraph($state);
-    }
-
-    public function getTree()
-    {
-        if ($this->startState->getWin() != 0) {
-            $this->start();
-        }
-
-        return $this->startState;
     }
 
     public function getWinner()
@@ -66,24 +56,100 @@ class GameTree
 
     public function isStrategyCorrect($strategy)
     {
-        if ($this->isThereAllPossibleStatesOfEnemy($strategy)) {
+        if ($this->areThereAllPossibleStatesOfEnemyAndStrategyEndsByWinStates($strategy)) {
             return $this->startState->isSubgraph($strategy);
         }
         else {
             return false;
         }
-
     }
 
-    public function getMaxCount($strategy)
+    public function isMaxCountCorrect($strategy)
     {
 
     }
 
-    private function isThereAllPossibleStatesOfEnemy($strategy){
+    private function areThereAllPossibleStatesOfEnemyAndStrategyEndsByWinStates($currentState){
+        //проверять что тут есть все возможные ходы противника
+        //(если сейчас ход противника, то обязательно присутствуют все возможные его ходы)
+        //
+        //также проверяет, заканчиваются ли ветки стратегии заключительными вершинами,
+        //причем выигрывает именно победитель, а не противник
+
+        if ($currentState->getWin() == 1) {
+            if ($currentState->getPlayer() == $this->winner) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
 
 
-        return false;
+
+
+        $allPossibleStates = true;
+        //правила для победителя
+        if ($currentState->getPlayer() == $this->winner) {
+            $count = 0;
+            foreach ($currentState->getNextStates() as $key => $nextState) {
+                $allPossibleStates = $this->areThereAllPossibleStatesOfEnemyAndStrategyEndsByWinStates($nextState) && $allPossibleStates;
+                $count++;
+            }
+
+            if ($allPossibleStates){
+                if ($count == count($this->operations) * count($this->initialStonesInHeaps)){
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            else {
+                return false;
+            }
+        }
+
+
+
+        //правила для проигравшего
+        if ($currentState->getPlayer() != -1){
+            foreach ($currentState->getNextStates() as $key => $nextState){
+                $allPossibleStates = $this->areThereAllPossibleStatesOfEnemyAndStrategyEndsByWinStates($nextState) && $allPossibleStates;
+            }
+
+            return $allPossibleStates;
+        }
+
+
+
+        //если корень
+        if ($this->winner == $this->firstPlayer) {
+            foreach ($currentState->getNextStates() as $key => $nextState) {
+                $allPossibleStates = $this->areThereAllPossibleStatesOfEnemyAndStrategyEndsByWinStates($nextState) && $allPossibleStates;
+            }
+        }
+        else {
+            $count = 0;
+            foreach ($currentState->getNextStates() as $key => $nextState) {
+                $allPossibleStates = $this->areThereAllPossibleStatesOfEnemyAndStrategyEndsByWinStates($nextState) && $allPossibleStates;
+                $count++;
+            }
+
+            if ($allPossibleStates){
+                if ($count == count($this->operations) * count($this->initialStonesInHeaps)){
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            else {
+                return false;
+            }
+        }
+
+        return $allPossibleStates;
     }
 
     private function buildGameTreeBranch($queue)
@@ -268,14 +334,14 @@ class GameTree
 
 }
 
-/* Test Game
+/* Test Game*/
 $operation1 = new Operation('x', 2);
 $operation2 = new Operation('+', 1);
 $operations = array(0 => $operation1, 1 => $operation2);
 
 $stones = array(0 => 7, 1 => 31);
 
-$game = new GameTree($operations, $stones, true, 73, 0, 10);
+$game = new GameTree($operations, $stones, true, 70, 0, 10);// 70 камней!
 $game->start();
 
 
@@ -284,25 +350,43 @@ $operation12 = new Operation('+', 1);
 $dummystrategy = State::withStonesInHeaps(array(0 => 7, 1 => 31));
 
 //step 1
-$possibleState = State::withStonesInHeaps(array(0 => 14, 1 => 31));
-$possibleState->setStep(1);
-$possibleState->setPlayer(0);
-$possibleState->setOperation($operation11);
+$possibleState00 = State::withStonesInHeaps(array(0 => 14, 1 => 31));
+$possibleState00->setStep(1);
+$possibleState00->setPlayer(0);
+$possibleState00->setOperation($operation11);
 
-$possibleState0 = State::withStonesInHeaps(array(0 => 7, 1 => 62));
-$possibleState0->setStep(1);
-$possibleState0->setPlayer(0);
-$possibleState0->setOperation($operation11);
+$possibleState01 = State::withStonesInHeaps(array(0 => 7, 1 => 62));
+$possibleState01->setStep(1);
+$possibleState01->setPlayer(0);
+$possibleState01->setOperation($operation11);
+
+$possibleState02 = State::withStonesInHeaps(array(0 => 7, 1 => 32));
+$possibleState02->setStep(1);
+$possibleState02->setPlayer(0);
+$possibleState02->setOperation($operation12);
+
+$possibleState03 = State::withStonesInHeaps(array(0 => 8, 1 => 31));
+$possibleState03->setStep(1);
+$possibleState03->setPlayer(0);
+$possibleState03->setOperation($operation12);
 
 $possibleStates = array();
-array_push($possibleStates, $possibleState);
-array_push($possibleStates, $possibleState0);
+array_push($possibleStates, $possibleState00);
+array_push($possibleStates, $possibleState01);
+array_push($possibleStates, $possibleState02);
+array_push($possibleStates, $possibleState03);
 $dummystrategy->setNextStates($possibleStates);
 //2
-$possibleState1 = State::withStonesInHeaps(array(0 => 14, 1 => 62));
+$possibleState0 = State::withStonesInHeaps(array(0 => 8, 1 => 62));
+$possibleState0->setStep(2);
+$possibleState0->setPlayer(1);
+$possibleState0->setWin();//на самом деле не win, но это просто тест
+$possibleState0->setOperation($operation11);
+
+$possibleState1 = State::withStonesInHeaps(array(0 => 7, 1 => 64));
 $possibleState1->setStep(2);
 $possibleState1->setPlayer(1);
-$possibleState1->setWin();
+$possibleState1->setWin();//на самом деле не win, но это просто тест
 $possibleState1->setOperation($operation11);
 
 $possibleState2 = State::withStonesInHeaps(array(0 => 14, 1 => 62));
@@ -311,21 +395,37 @@ $possibleState2->setPlayer(1);
 $possibleState2->setWin();
 $possibleState2->setOperation($operation11);
 
+$possibleState3 = State::withStonesInHeaps(array(0 => 14, 1 => 62));
+$possibleState3->setStep(2);
+$possibleState3->setPlayer(1);
+$possibleState3->setWin();
+$possibleState3->setOperation($operation11);
+
 $possibleStates = array();
-array_push($possibleStates, $possibleState1);
+array_push($possibleStates, $possibleState3);
 $dummystrategy->getNextStates()[0]->setNextStates($possibleStates);
 $poss2 = array();
-array_push($poss2, $possibleState2);
+array_push($poss2, $possibleState2);//
 $dummystrategy->getNextStates()[1]->setNextStates($poss2);
+
+$poss2 = array();
+array_push($poss2, $possibleState1);//
+$dummystrategy->getNextStates()[2]->setNextStates($poss2);
+
+$poss2 = array();
+array_push($poss2, $possibleState0);//
+$dummystrategy->getNextStates()[3]->setNextStates($poss2);
 
 echo "\r\n\r\n ~~~~~~~~~~~~~\r\n";
 
-if ($game->getTree()->checkSubgraph($dummystrategy)) {
+if ($game->isStrategyCorrect($dummystrategy)) {
     echo "hello";
 } else {
     echo "gtfo";
 }
-*/
+
+
+
 
 class State
 {
@@ -382,28 +482,8 @@ class State
         return $instance;
     }
 
-    public function isStrategyCorrect($strategy, $winner)
-    {
-        if ($this->isThereAllPossibleStatesOfEnemy($strategy, $winner)) {
-            return $this->isSubgraph($strategy);
-        }
-        else {
-            return false;
-        }
-
-    }
-
-    private function isThereAllPossibleStatesOfEnemy($strategy, $winner){
-        //проверять что тут есть все возможные ходы противника
-
-        return false;
-    }
-
     public function isSubgraph($strategy)
-    {//TODO: add check что заключительными заканчиваются ветки и если игрок - противоп, то таких ходов дб m*n строго, не меньше
-        // т к для всех возможных ходов противника
-
-
+    {
         if ($this->equals($strategy)) {
             $isSubGraph = true;
 
@@ -423,7 +503,7 @@ class State
                     forEach ($strategyChildren as $key1 => $strategyChild) {
                         forEach ($treeChildren as $key2 => $treeChild) {
                             if ($strategyChild->equals($treeChild)) {
-                                $isSubGraph = $treeChild->checkSubgraph($strategyChild);
+                                $isSubGraph = $treeChild->isSubgraph($strategyChild) && $isSubGraph;
                                 $usedChildOfStrategy[$key1] = true;
                             }
                         }
